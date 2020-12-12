@@ -11,26 +11,34 @@
 		C45F2EF225134C32008D262E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C45F2EF125134C32008D262E /* main.cpp */; };
 		C45F2EFA25134CDB008D262E /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C45F2EF925134CDB008D262E /* libglfw.3.3.dylib */; };
 		C45F2EFC25134D2A008D262E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C45F2EFB25134D2A008D262E /* OpenGL.framework */; };
+		C472BBBB2584C0B7003EC976 /* appleD.jpg in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C472BBBA2584C0A0003EC976 /* appleD.jpg */; };
+		C472BBBF2584C11E003EC976 /* appleS.jpg in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C472BBBD2584C107003EC976 /* appleS.jpg */; };
+		C472BBC02584C128003EC976 /* apple.j3a in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C472BBBE2584C10A003EC976 /* apple.j3a */; };
+		C472BBC12584C128003EC976 /* appleN.jpg in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C472BBBC2584C103003EC976 /* appleN.jpg */; };
 		C4A8C40F255E76CF00EE493B /* j3a.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A8C40E255E76CF00EE493B /* j3a.cpp */; };
-		C4A8C412255E770B00EE493B /* shader.frag in Copy Files */ = {isa = PBXBuildFile; fileRef = C4A8C411255E76F700EE493B /* shader.frag */; };
-		C4A8C413255E770B00EE493B /* shader.vert in Copy Files */ = {isa = PBXBuildFile; fileRef = C4A8C410255E76F700EE493B /* shader.vert */; };
-		C4A8C414255E770B00EE493B /* j3a.cpp in Copy Files */ = {isa = PBXBuildFile; fileRef = C4A8C40E255E76CF00EE493B /* j3a.cpp */; };
-		C4A8C415255E770B00EE493B /* j3a.hpp in Copy Files */ = {isa = PBXBuildFile; fileRef = C4A8C40D255E76CA00EE493B /* j3a.hpp */; };
+		C4A8C412255E770B00EE493B /* shader.frag in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4A8C411255E76F700EE493B /* shader.frag */; };
+		C4A8C413255E770B00EE493B /* shader.vert in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4A8C410255E76F700EE493B /* shader.vert */; };
+		C4A8C414255E770B00EE493B /* j3a.cpp in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4A8C40E255E76CF00EE493B /* j3a.cpp */; };
+		C4A8C415255E770B00EE493B /* j3a.hpp in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4A8C40D255E76CA00EE493B /* j3a.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		C45F2EEC25134C32008D262E /* Copy Files */ = {
+		C45F2EEC25134C32008D262E /* Copy Files (6 items) */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				C4A8C412255E770B00EE493B /* shader.frag in Copy Files */,
-				C4A8C413255E770B00EE493B /* shader.vert in Copy Files */,
-				C4A8C414255E770B00EE493B /* j3a.cpp in Copy Files */,
-				C4A8C415255E770B00EE493B /* j3a.hpp in Copy Files */,
+				C472BBC02584C128003EC976 /* apple.j3a in Copy Files (6 items) */,
+				C472BBC12584C128003EC976 /* appleN.jpg in Copy Files (6 items) */,
+				C472BBBF2584C11E003EC976 /* appleS.jpg in Copy Files (6 items) */,
+				C472BBBB2584C0B7003EC976 /* appleD.jpg in Copy Files (6 items) */,
+				C4A8C412255E770B00EE493B /* shader.frag in Copy Files (6 items) */,
+				C4A8C413255E770B00EE493B /* shader.vert in Copy Files (6 items) */,
+				C4A8C414255E770B00EE493B /* j3a.cpp in Copy Files (6 items) */,
+				C4A8C415255E770B00EE493B /* j3a.hpp in Copy Files (6 items) */,
 			);
-			name = "Copy Files";
+			name = "Copy Files (6 items)";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -42,6 +50,11 @@
 		C45F2EF925134CDB008D262E /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../usr/local/Cellar/glfw/3.3.2/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
 		C45F2EFB25134D2A008D262E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		C45F2EFD25134D71008D262E /* OpenCVTest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OpenCVTest.entitlements; sourceTree = "<group>"; };
+		C472BBB92584BBAD003EC976 /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../Desktop/Archive/stb_image.h; sourceTree = "<group>"; };
+		C472BBBA2584C0A0003EC976 /* appleD.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = appleD.jpg; path = ../../../Desktop/Archive/appleD.jpg; sourceTree = "<group>"; };
+		C472BBBC2584C103003EC976 /* appleN.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = appleN.jpg; path = ../../../Desktop/Archive/appleN.jpg; sourceTree = "<group>"; };
+		C472BBBD2584C107003EC976 /* appleS.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = appleS.jpg; path = ../../../Desktop/Archive/appleS.jpg; sourceTree = "<group>"; };
+		C472BBBE2584C10A003EC976 /* apple.j3a */ = {isa = PBXFileReference; lastKnownFileType = text; name = apple.j3a; path = ../../../Desktop/Archive/apple.j3a; sourceTree = "<group>"; };
 		C4A8C40D255E76CA00EE493B /* j3a.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = j3a.hpp; path = ../../../Desktop/Archive/j3a.hpp; sourceTree = "<group>"; };
 		C4A8C40E255E76CF00EE493B /* j3a.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = j3a.cpp; path = ../../../Desktop/Archive/j3a.cpp; sourceTree = "<group>"; };
 		C4A8C410255E76F700EE493B /* shader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = ../../../Desktop/Archive/shader.vert; sourceTree = "<group>"; };
@@ -82,6 +95,11 @@
 		C45F2EF025134C32008D262E /* OpenCVTest */ = {
 			isa = PBXGroup;
 			children = (
+				C472BBBD2584C107003EC976 /* appleS.jpg */,
+				C472BBBE2584C10A003EC976 /* apple.j3a */,
+				C472BBBC2584C103003EC976 /* appleN.jpg */,
+				C472BBBA2584C0A0003EC976 /* appleD.jpg */,
+				C472BBB92584BBAD003EC976 /* stb_image.h */,
 				C4A8C411255E76F700EE493B /* shader.frag */,
 				C4A8C410255E76F700EE493B /* shader.vert */,
 				C4A8C40E255E76CF00EE493B /* j3a.cpp */,
@@ -111,7 +129,7 @@
 			buildPhases = (
 				C45F2EEA25134C32008D262E /* Sources */,
 				C45F2EEB25134C32008D262E /* Frameworks */,
-				C45F2EEC25134C32008D262E /* Copy Files */,
+				C45F2EEC25134C32008D262E /* Copy Files (6 items) */,
 			);
 			buildRules = (
 			);

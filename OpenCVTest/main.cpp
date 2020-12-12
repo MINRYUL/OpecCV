@@ -6,6 +6,7 @@
 //  Copyright © 2020 Ryul. All rights reserved.
 //
 #define GLEW_STATIC
+#define STB_IMAGE_IMPLEMENTATION
 #include <OpenGL/gl3.h>
 #include <GLFW/glfw3.h>
 
@@ -16,6 +17,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "stb_image.h"
 #include "toys.h"
 #include "j3a.hpp"
 
@@ -27,10 +29,14 @@ void init();
 void mouseButtonCallback(GLFWwindow*, int, int, int);
 void cursorMotionCallback(GLFWwindow*, double, double);
 
-GLuint triangleVBO;
-GLuint normalVBO;
-GLuint vertexArrayID;
-GLuint indexVBOID;
+GLuint triangleVBO = 0;
+GLuint normalVBO = 0;
+GLuint texCoordVBO = 0;
+GLuint vertexArrayID = 0;
+GLuint indexVBOID = 0;
+
+GLuint diffTexID = 0;
+
 
 Program program;
 
@@ -77,8 +83,22 @@ int main(int argc, const char * argv[]) {
 #define PATH "/Users/supro/Desktop/Archive/"
 
 void init(){
-    loadJ3A(PATH"bunny.j3a");
+    loadJ3A(PATH"apple.j3a");
+    int texWidth, texHeight, texChannels;
     program.loadShaders("shader.vert", "shader.frag");
+    
+    void* buffer = stbi_load("appleD.jpg", &texWidth, &texHeight, &texChannels, 4);
+
+    glGenTextures(1, &diffTexID);
+    glBindTexture(GL_TEXTURE_2D, diffTexID);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_SRGB8_ALPHA8, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    //GL_SRGB8_ALPHA8: 이미지에 들어가 있는 값이 SRGB값이라고 표시.
+
+    stbi_image_free( buffer );
     
     glGenVertexArrays(1, &vertexArrayID);
     glBindVertexArray(vertexArrayID);
@@ -98,6 +118,15 @@ void init(){
     glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    glGenBuffers(1, &texCoordVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO);
+    glBufferData(GL_ARRAY_BUFFER, nVertices[0]*sizeof(vec2), texCoords[0], GL_STATIC_DRAW); //2차원이므로 vec2를 사용
+    
+    glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    
     
     glGenBuffers(1, &indexVBOID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
@@ -120,12 +149,6 @@ void render(GLFWwindow* window){
     
     glBindVertexArray(vertexArrayID);
     
-    mat4 projMat = perspective(cameraFov*3.141592f/180, w/float(h), 0.01f, 100.f);
-    
-    vec3 cameraPosition = vec3(0, 0, cameraDistance);
-    cameraPosition = vec3(rotate(cameraPitch, vec3(-1, 0, 0)) * vec4(cameraPosition, 1));
-    cameraPosition = vec3(rotate(cameraYaw, vec3(0, 1, 0)) * vec4(cameraPosition, 1));
-    mat4 viewMat = lookAt(cameraPosition, sceneCenter, vec3(0, 1, 0));
     
     rotAngle += 0.3/180.f*3.141592;
     GLuint loc;
@@ -134,9 +157,16 @@ void render(GLFWwindow* window){
     glUniformMatrix4fv(loc, 1, 0, value_ptr(rotate(90/180.f * 3.141592f, vec3(1, 0, 0))));
     
     loc = glGetUniformLocation( program.programID, "viewMat");
+    vec3 cameraPosition = vec3(0, 0, cameraDistance);
+    cameraPosition = vec3(rotate(cameraPitch, vec3(-1, 0, 0)) * vec4(cameraPosition, 1));
+    cameraPosition = vec3(rotate(cameraYaw, vec3(0, 1, 0)) * vec4(cameraPosition, 1));
+    
+//    vec3 cameraPosition = vec3(rotate(cameraYaw, vec3(0, 1, 0)) * rotate(cameraPitch, vec3(1,0,0)) * vec4(0,0,cameraDistance,0));
+    mat4 viewMat = lookAt(cameraPosition, vec3(0, 0, 0), vec3(0, 1, 0));
     glUniformMatrix4fv(loc, 1, 0, value_ptr(viewMat));
     
     loc = glGetUniformLocation( program.programID, "projMat");
+    mat4 projMat = perspective(cameraFov*3.141592f/180, w/(float)h, 0.01f, 100.f);
     glUniformMatrix4fv(loc, 1, 0, value_ptr(projMat));
     
     loc = glGetUniformLocation( program.programID, "cameraPos");
@@ -159,6 +189,11 @@ void render(GLFWwindow* window){
     
     loc = glGetUniformLocation( program.programID, "lightEffect");
     glUniform1i(loc, lightEffect);
+    
+    glActiveTexture(GL_TEXTURE0 + 2);
+    glBindTexture(GL_TEXTURE_2D, diffTexID);
+    loc = glGetUniformLocation( program.programID, "diffTex");
+    glUniform1i(loc, 2);
 
     glBindVertexArray(vertexArrayID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
@@ -179,6 +214,7 @@ void cursorMotionCallback(GLFWwindow* window, double xpos, double ypos){
     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
         if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
             cameraFov *= (pow(1.001, ypos - lastY));
+            cameraFov *= (pow(1.001, xpos - lastX));
         }
         else{
             cameraPitch += (ypos - lastY)/300;
