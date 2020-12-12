@@ -5,11 +5,187 @@
 //  Created by 김경률 on 2020/09/17.
 //  Copyright © 2020 Ryul. All rights reserved.
 //
+#define GLEW_STATIC
+#include <OpenGL/gl3.h>
+#include <GLFW/glfw3.h>
 
-#include <iostream>
+#include <glm/glm.hpp>
+
+#include <vector>
+#include <math.h>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "toys.h"
+#include "j3a.hpp"
+
+using namespace glm;
+using namespace std;
+
+void render(GLFWwindow* window);
+void init();
+void mouseButtonCallback(GLFWwindow*, int, int, int);
+void cursorMotionCallback(GLFWwindow*, double, double);
+
+GLuint triangleVBO;
+GLuint normalVBO;
+GLuint vertexArrayID;
+GLuint indexVBOID;
+
+Program program;
+
+float cameraDistance = 4;
+float cameraYaw = 0.f;
+float cameraPitch = 0.f;
+float cameraFov = 60.f;
+
+vec3 sceneCenter = vec3(0, 0, 0);
+vec3 lightPos = vec3(3, 3, 3);
+vec3 lightColor = vec3(1);
+vec3 ambientLight = vec3(0.1);
+
+vec4 diffuseMaterial = vec4(1, 0.4, 0, 1);
+vec4 specularMaterial = vec4(1);
+
+GLint lightEffect = 10;
+int lastX = 0, lastY = 0;
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    std::cout << "Hello, World!\n";
+    glfwInit();
+    
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
+    glfwWindowHint(GLFW_SAMPLES, 8);
+
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Test", 0, 0);
+    glfwMakeContextCurrent(window);
+    glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    glfwSetCursorPosCallback(window, cursorMotionCallback);
+
+    init();
+    while(!glfwWindowShouldClose(window)){
+        render(window);
+        glfwPollEvents();
+    }
+    glfwTerminate();
     return 0;
 }
+
+#define PATH "/Users/supro/Desktop/Archive/"
+
+void init(){
+    loadJ3A(PATH"bunny.j3a");
+    program.loadShaders("shader.vert", "shader.frag");
+    
+    glGenVertexArrays(1, &vertexArrayID);
+    glBindVertexArray(vertexArrayID);
+    
+    glGenBuffers(1, &triangleVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
+    glBufferData(GL_ARRAY_BUFFER, nVertices[0]*sizeof(vec3), vertices[0], GL_STATIC_DRAW);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    glGenBuffers(1, &normalVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
+    glBufferData(GL_ARRAY_BUFFER, nVertices[0]*sizeof(vec3), normals[0], GL_STATIC_DRAW);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, normalVBO);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    glGenBuffers(1, &indexVBOID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles[0]*sizeof(vec3), triangles[0], GL_STATIC_DRAW);
+    
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_FRAMEBUFFER_SRGB);
+}
+
+float rotAngle = 0;
+
+void render(GLFWwindow* window){
+    int w, h;
+    glfwGetFramebufferSize(window, &w, &h);
+    glViewport(0, 0, w, h);
+    glClearColor(0, 0, .5, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glUseProgram(program.programID);
+    
+    glBindVertexArray(vertexArrayID);
+    
+    mat4 projMat = perspective(cameraFov*3.141592f/180, w/float(h), 0.01f, 100.f);
+    
+    vec3 cameraPosition = vec3(0, 0, cameraDistance);
+    cameraPosition = vec3(rotate(cameraPitch, vec3(-1, 0, 0)) * vec4(cameraPosition, 1));
+    cameraPosition = vec3(rotate(cameraYaw, vec3(0, 1, 0)) * vec4(cameraPosition, 1));
+    mat4 viewMat = lookAt(cameraPosition, sceneCenter, vec3(0, 1, 0));
+    
+    rotAngle += 0.3/180.f*3.141592;
+    GLuint loc;
+    
+    loc = glGetUniformLocation(program.programID, "modelMat");
+    glUniformMatrix4fv(loc, 1, 0, value_ptr(rotate(90/180.f * 3.141592f, vec3(1, 0, 0))));
+    
+    loc = glGetUniformLocation( program.programID, "viewMat");
+    glUniformMatrix4fv(loc, 1, 0, value_ptr(viewMat));
+    
+    loc = glGetUniformLocation( program.programID, "projMat");
+    glUniformMatrix4fv(loc, 1, 0, value_ptr(projMat));
+    
+    loc = glGetUniformLocation( program.programID, "cameraPos");
+    glUniform3fv( loc, 1, value_ptr(cameraPosition));
+    
+    loc = glGetUniformLocation( program.programID, "lightPos");
+    glUniform3fv( loc, 1, value_ptr(lightPos));
+    
+    loc = glGetUniformLocation( program.programID, "lightColor");
+    glUniform3fv( loc, 1, value_ptr(lightColor));
+    
+    loc = glGetUniformLocation( program.programID, "ambientLight");
+    glUniform3fv( loc, 1, value_ptr(ambientLight));
+    
+    loc = glGetUniformLocation( program.programID, "diffuseMaterial");
+    glUniform4fv( loc, 1, value_ptr(diffuseMaterial));
+    
+    loc = glGetUniformLocation( program.programID, "specularMaterial");
+    glUniform4fv( loc, 1, value_ptr(specularMaterial));
+    
+    loc = glGetUniformLocation( program.programID, "lightEffect");
+    glUniform1i(loc, lightEffect);
+
+    glBindVertexArray(vertexArrayID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
+    glDrawElements(GL_TRIANGLES, nTriangles[0]*3, GL_UNSIGNED_INT, 0);
+    
+    glfwSwapBuffers(window);
+}
+
+void mouseButtonCallback( GLFWwindow* window, int button, int action, int mods){
+    if(button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        lastX = int(xpos);
+        lastY = int(ypos);
+    }
+}
+void cursorMotionCallback(GLFWwindow* window, double xpos, double ypos){
+    if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
+        if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
+            cameraFov *= (pow(1.001, ypos - lastY));
+        }
+        else{
+            cameraPitch += (ypos - lastY)/300;
+            cameraYaw -= (xpos - lastX)/300;
+            lastX = int(xpos);
+            lastY = int(ypos);
+        }
+    }
+}
+
