@@ -36,14 +36,14 @@ GLuint vertexArrayID = 0;
 GLuint indexVBOID = 0;
 
 GLuint diffTexID = 0;
-
+GLuint bumpTexID = 0;
 
 Program program;
 
-float cameraDistance = 4;
+float cameraDistance = 10.f;
 float cameraYaw = 0.f;
 float cameraPitch = 0.f;
-float cameraFov = 60.f;
+float cameraFov = 60.f/180.f;
 
 vec3 sceneCenter = vec3(0, 0, 0);
 vec3 lightPos = vec3(3, 3, 3);
@@ -83,20 +83,35 @@ int main(int argc, const char * argv[]) {
 #define PATH "/Users/supro/Desktop/Archive/"
 
 void init(){
-    loadJ3A(PATH"apple.j3a");
+    loadJ3A("Trex_m.j3a");
     int texWidth, texHeight, texChannels;
     program.loadShaders("shader.vert", "shader.frag");
     
-    void* buffer = stbi_load("appleD.jpg", &texWidth, &texHeight, &texChannels, 4);
+    void* buffer = stbi_load("TrexColor01152015.jpg", &texWidth, &texHeight, &texChannels, 4);
 
     glGenTextures(1, &diffTexID);
     glBindTexture(GL_TEXTURE_2D, diffTexID);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexImage2D( GL_TEXTURE_2D, 0, GL_SRGB8_ALPHA8, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
     //GL_SRGB8_ALPHA8: 이미지에 들어가 있는 값이 SRGB값이라고 표시.
+    glGenerateMipmap(GL_TEXTURE_2D);
+    
+    stbi_image_free( buffer );
+    
+    buffer = stbi_load("TrexBump012714.jpg", &texWidth, &texHeight, &texChannels, 4);
+
+    glGenTextures(1, &bumpTexID);
+    glBindTexture(GL_TEXTURE_2D, bumpTexID);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,  GL_LINEAR_MIPMAP_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_SRGB8_ALPHA8, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    //GL_SRGB8_ALPHA8: 이미지에 들어가 있는 값이 SRGB값이라고 표시.
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free( buffer );
     
@@ -136,8 +151,6 @@ void init(){
     glEnable(GL_FRAMEBUFFER_SRGB);
 }
 
-float rotAngle = 0;
-
 void render(GLFWwindow* window){
     int w, h;
     glfwGetFramebufferSize(window, &w, &h);
@@ -149,12 +162,7 @@ void render(GLFWwindow* window){
     
     glBindVertexArray(vertexArrayID);
     
-    
-    rotAngle += 0.3/180.f*3.141592;
     GLuint loc;
-    
-    loc = glGetUniformLocation(program.programID, "modelMat");
-    glUniformMatrix4fv(loc, 1, 0, value_ptr(rotate(90/180.f * 3.141592f, vec3(1, 0, 0))));
     
     loc = glGetUniformLocation( program.programID, "viewMat");
     vec3 cameraPosition = vec3(0, 0, cameraDistance);
@@ -162,7 +170,7 @@ void render(GLFWwindow* window){
     cameraPosition = vec3(rotate(cameraYaw, vec3(0, 1, 0)) * vec4(cameraPosition, 1));
     
 //    vec3 cameraPosition = vec3(rotate(cameraYaw, vec3(0, 1, 0)) * rotate(cameraPitch, vec3(1,0,0)) * vec4(0,0,cameraDistance,0));
-    mat4 viewMat = lookAt(cameraPosition, vec3(0, 0, 0), vec3(0, 1, 0));
+    mat4 viewMat = lookAt(cameraPosition, sceneCenter, vec3(0, 1, 0));
     glUniformMatrix4fv(loc, 1, 0, value_ptr(viewMat));
     
     loc = glGetUniformLocation( program.programID, "projMat");
@@ -194,6 +202,11 @@ void render(GLFWwindow* window){
     glBindTexture(GL_TEXTURE_2D, diffTexID);
     loc = glGetUniformLocation( program.programID, "diffTex");
     glUniform1i(loc, 2);
+    
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_2D, bumpTexID);
+    loc = glGetUniformLocation( program.programID, "bumpTex");
+    glUniform1i(loc, 1);
 
     glBindVertexArray(vertexArrayID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
@@ -213,15 +226,15 @@ void mouseButtonCallback( GLFWwindow* window, int button, int action, int mods){
 void cursorMotionCallback(GLFWwindow* window, double xpos, double ypos){
     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
         if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
-            cameraFov *= (pow(1.001, ypos - lastY));
-            cameraFov *= (pow(1.001, xpos - lastX));
+            cameraFov += ( ypos - lastY ) /300;
+
         }
         else{
-            cameraPitch += (ypos - lastY)/300;
-            cameraYaw -= (xpos - lastX)/300;
-            lastX = int(xpos);
-            lastY = int(ypos);
+            cameraPitch -= (ypos - lastY) / 200;
+            cameraYaw -= (xpos - lastX) / 200;
         }
+        lastX = int(xpos);
+        lastY = int(ypos);
     }
 }
 

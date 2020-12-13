@@ -15,6 +15,9 @@
 		C472BBBF2584C11E003EC976 /* appleS.jpg in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C472BBBD2584C107003EC976 /* appleS.jpg */; };
 		C472BBC02584C128003EC976 /* apple.j3a in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C472BBBE2584C10A003EC976 /* apple.j3a */; };
 		C472BBC12584C128003EC976 /* appleN.jpg in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C472BBBC2584C103003EC976 /* appleN.jpg */; };
+		C472BBC42584E753003EC976 /* TrexColor01152015.jpg in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C472BBC32584E730003EC976 /* TrexColor01152015.jpg */; };
+		C472BBC52584E753003EC976 /* TrexBump012714.jpg in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C472BBC22584E70C003EC976 /* TrexBump012714.jpg */; };
+		C472BBC72584E836003EC976 /* Trex_m.j3a in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C472BBC62584E82E003EC976 /* Trex_m.j3a */; };
 		C4A8C40F255E76CF00EE493B /* j3a.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A8C40E255E76CF00EE493B /* j3a.cpp */; };
 		C4A8C412255E770B00EE493B /* shader.frag in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4A8C411255E76F700EE493B /* shader.frag */; };
 		C4A8C413255E770B00EE493B /* shader.vert in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4A8C410255E76F700EE493B /* shader.vert */; };
@@ -29,6 +32,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				C472BBC72584E836003EC976 /* Trex_m.j3a in Copy Files (6 items) */,
+				C472BBC42584E753003EC976 /* TrexColor01152015.jpg in Copy Files (6 items) */,
+				C472BBC52584E753003EC976 /* TrexBump012714.jpg in Copy Files (6 items) */,
 				C472BBC02584C128003EC976 /* apple.j3a in Copy Files (6 items) */,
 				C472BBC12584C128003EC976 /* appleN.jpg in Copy Files (6 items) */,
 				C472BBBF2584C11E003EC976 /* appleS.jpg in Copy Files (6 items) */,
@@ -55,6 +61,9 @@
 		C472BBBC2584C103003EC976 /* appleN.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = appleN.jpg; path = ../../../Desktop/Archive/appleN.jpg; sourceTree = "<group>"; };
 		C472BBBD2584C107003EC976 /* appleS.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = appleS.jpg; path = ../../../Desktop/Archive/appleS.jpg; sourceTree = "<group>"; };
 		C472BBBE2584C10A003EC976 /* apple.j3a */ = {isa = PBXFileReference; lastKnownFileType = text; name = apple.j3a; path = ../../../Desktop/Archive/apple.j3a; sourceTree = "<group>"; };
+		C472BBC22584E70C003EC976 /* TrexBump012714.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TrexBump012714.jpg; path = ../../../Desktop/Archive/TrexBump012714.jpg; sourceTree = "<group>"; };
+		C472BBC32584E730003EC976 /* TrexColor01152015.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TrexColor01152015.jpg; path = ../../../Desktop/Archive/TrexColor01152015.jpg; sourceTree = "<group>"; };
+		C472BBC62584E82E003EC976 /* Trex_m.j3a */ = {isa = PBXFileReference; lastKnownFileType = text; name = Trex_m.j3a; path = ../../../Desktop/Archive/Trex_m.j3a; sourceTree = "<group>"; };
 		C4A8C40D255E76CA00EE493B /* j3a.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = j3a.hpp; path = ../../../Desktop/Archive/j3a.hpp; sourceTree = "<group>"; };
 		C4A8C40E255E76CF00EE493B /* j3a.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = j3a.cpp; path = ../../../Desktop/Archive/j3a.cpp; sourceTree = "<group>"; };
 		C4A8C410255E76F700EE493B /* shader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = ../../../Desktop/Archive/shader.vert; sourceTree = "<group>"; };
@@ -95,6 +104,9 @@
 		C45F2EF025134C32008D262E /* OpenCVTest */ = {
 			isa = PBXGroup;
 			children = (
+				C472BBC62584E82E003EC976 /* Trex_m.j3a */,
+				C472BBC32584E730003EC976 /* TrexColor01152015.jpg */,
+				C472BBC22584E70C003EC976 /* TrexBump012714.jpg */,
 				C472BBBD2584C107003EC976 /* appleS.jpg */,
 				C472BBBE2584C10A003EC976 /* apple.j3a */,
 				C472BBBC2584C103003EC976 /* appleN.jpg */,
