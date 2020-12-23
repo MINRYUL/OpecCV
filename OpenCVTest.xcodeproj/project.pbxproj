@@ -23,6 +23,12 @@
 		C4A8C413255E770B00EE493B /* shader.vert in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4A8C410255E76F700EE493B /* shader.vert */; };
 		C4A8C414255E770B00EE493B /* j3a.cpp in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4A8C40E255E76CF00EE493B /* j3a.cpp */; };
 		C4A8C415255E770B00EE493B /* j3a.hpp in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4A8C40D255E76CA00EE493B /* j3a.hpp */; };
+		C4EF8D6825923D1A0061B3FE /* shadow.vert in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4EF8D6625923C920061B3FE /* shadow.vert */; };
+		C4EF8D6925923D1A0061B3FE /* shadow.frag in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4EF8D6725923CAF0061B3FE /* shadow.frag */; };
+		C4EF8D6E2593BC140061B3FE /* dwarf.j3a in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4EF8D6A2593BC010061B3FE /* dwarf.j3a */; };
+		C4EF8D6F2593BC140061B3FE /* dwarfB.jpg in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4EF8D6B2593BC010061B3FE /* dwarfB.jpg */; };
+		C4EF8D702593BC140061B3FE /* dwarfD.jpg in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4EF8D6C2593BC010061B3FE /* dwarfD.jpg */; };
+		C4EF8D712593BC140061B3FE /* dwarfS.jpg in Copy Files (6 items) */ = {isa = PBXBuildFile; fileRef = C4EF8D6D2593BC010061B3FE /* dwarfS.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,6 +38,12 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				C4EF8D6E2593BC140061B3FE /* dwarf.j3a in Copy Files (6 items) */,
+				C4EF8D6F2593BC140061B3FE /* dwarfB.jpg in Copy Files (6 items) */,
+				C4EF8D702593BC140061B3FE /* dwarfD.jpg in Copy Files (6 items) */,
+				C4EF8D712593BC140061B3FE /* dwarfS.jpg in Copy Files (6 items) */,
+				C4EF8D6825923D1A0061B3FE /* shadow.vert in Copy Files (6 items) */,
+				C4EF8D6925923D1A0061B3FE /* shadow.frag in Copy Files (6 items) */,
 				C472BBC72584E836003EC976 /* Trex_m.j3a in Copy Files (6 items) */,
 				C472BBC42584E753003EC976 /* TrexColor01152015.jpg in Copy Files (6 items) */,
 				C472BBC52584E753003EC976 /* TrexBump012714.jpg in Copy Files (6 items) */,
@@ -68,6 +80,12 @@
 		C4A8C40E255E76CF00EE493B /* j3a.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = j3a.cpp; path = ../../../Desktop/Archive/j3a.cpp; sourceTree = "<group>"; };
 		C4A8C410255E76F700EE493B /* shader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = ../../../Desktop/Archive/shader.vert; sourceTree = "<group>"; };
 		C4A8C411255E76F700EE493B /* shader.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = shader.frag; path = ../../../Desktop/Archive/shader.frag; sourceTree = "<group>"; };
+		C4EF8D6625923C920061B3FE /* shadow.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shadow.vert; sourceTree = "<group>"; };
+		C4EF8D6725923CAF0061B3FE /* shadow.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = shadow.frag; sourceTree = "<group>"; };
+		C4EF8D6A2593BC010061B3FE /* dwarf.j3a */ = {isa = PBXFileReference; lastKnownFileType = text; name = dwarf.j3a; path = ../../../Desktop/Archive/dwarf.j3a; sourceTree = "<group>"; };
+		C4EF8D6B2593BC010061B3FE /* dwarfB.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = dwarfB.jpg; path = ../../../Desktop/Archive/dwarfB.jpg; sourceTree = "<group>"; };
+		C4EF8D6C2593BC010061B3FE /* dwarfD.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = dwarfD.jpg; path = ../../../Desktop/Archive/dwarfD.jpg; sourceTree = "<group>"; };
+		C4EF8D6D2593BC010061B3FE /* dwarfS.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = dwarfS.jpg; path = ../../../Desktop/Archive/dwarfS.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +122,10 @@
 		C45F2EF025134C32008D262E /* OpenCVTest */ = {
 			isa = PBXGroup;
 			children = (
+				C4EF8D6A2593BC010061B3FE /* dwarf.j3a */,
+				C4EF8D6B2593BC010061B3FE /* dwarfB.jpg */,
+				C4EF8D6C2593BC010061B3FE /* dwarfD.jpg */,
+				C4EF8D6D2593BC010061B3FE /* dwarfS.jpg */,
 				C472BBC62584E82E003EC976 /* Trex_m.j3a */,
 				C472BBC32584E730003EC976 /* TrexColor01152015.jpg */,
 				C472BBC22584E70C003EC976 /* TrexBump012714.jpg */,
@@ -118,6 +140,8 @@
 				C4A8C40D255E76CA00EE493B /* j3a.hpp */,
 				C45F2EFD25134D71008D262E /* OpenCVTest.entitlements */,
 				C45F2EF125134C32008D262E /* main.cpp */,
+				C4EF8D6625923C920061B3FE /* shadow.vert */,
+				C4EF8D6725923CAF0061B3FE /* shadow.frag */,
 			);
 			path = OpenCVTest;
 			sourceTree = "<group>";

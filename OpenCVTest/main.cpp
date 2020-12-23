@@ -9,7 +9,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <OpenGL/gl3.h>
 #include <GLFW/glfw3.h>
-
 #include <glm/glm.hpp>
 
 #include <vector>
@@ -17,6 +16,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/projection.hpp>
 #include "stb_image.h"
 #include "toys.h"
 #include "j3a.hpp"
@@ -37,8 +37,12 @@ GLuint indexVBOID = 0;
 
 GLuint diffTexID = 0;
 GLuint bumpTexID = 0;
+GLuint shadowTex = 0;
+GLuint shadowDepth = 0;
+GLuint shadowFBO = 0;
 
 Program program;
+Program shadowProgram;
 
 float cameraDistance = 10.f;
 float cameraYaw = 0.f;
@@ -86,6 +90,7 @@ void init(){
     loadJ3A("Trex_m.j3a");
     int texWidth, texHeight, texChannels;
     program.loadShaders("shader.vert", "shader.frag");
+    shadowProgram.loadShaders("shadow.vert", "shadow.frag");
     
     void* buffer = stbi_load("TrexColor01152015.jpg", &texWidth, &texHeight, &texChannels, 4);
 
@@ -114,6 +119,7 @@ void init(){
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free( buffer );
+    
     
     glGenVertexArrays(1, &vertexArrayID);
     glBindVertexArray(vertexArrayID);
@@ -149,27 +155,76 @@ void init(){
     
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_FRAMEBUFFER_SRGB);
+    
+    glGenTextures(1, &shadowTex);
+    glBindTexture(GL_TEXTURE_2D, shadowTex);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB32F, 1024, 1024, 0,GL_RGB, GL_FLOAT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    glGenTextures(1, &shadowDepth);
+    glBindTexture(GL_TEXTURE_2D, shadowDepth);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT32F, 1024, 1024, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    glGenFramebuffers(1, &shadowFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, shadowTex, 0);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowDepth, 0);
+    GLenum drawBuffers[] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, drawBuffers);
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) printf("FBO Error\n");
+    glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 }
 
 void render(GLFWwindow* window){
     int w, h;
+    GLuint loc;
+    mat4 modelMat = mat4(1);
+    
+//shadow map
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+    glViewport(0, 0, 1024, 1024);
+    glClearColor(1,1,1,1);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    
+    glUseProgram(shadowProgram.programID );
+    mat4 shadowProjMat = ortho(-2.f, 2.f, -2.f, 2.f, 0.01f, 10.f);
+    mat4 shadowViewMat = lookAt(lightPos, vec3(0,0,0), vec3(0,1,0));
+    mat4 shadowMVP = shadowProjMat * shadowViewMat * modelMat;
+    
+    loc = glGetUniformLocation( shadowProgram.programID, "shadowMVP");
+    glUniformMatrix4fv(loc, 1, 0, value_ptr(shadowMVP));
+    
+    glBindVertexArray(vertexArrayID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
+    glDrawElements(GL_TRIANGLES, nTriangles[0]*3, GL_UNSIGNED_INT, 0);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+    //end
+
     glfwGetFramebufferSize(window, &w, &h);
     glViewport(0, 0, w, h);
     glClearColor(0, 0, .5, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glUseProgram(program.programID);
     
+    glUseProgram(program.programID);
     glBindVertexArray(vertexArrayID);
     
-    GLuint loc;
     
     loc = glGetUniformLocation( program.programID, "viewMat");
-    vec3 cameraPosition = vec3(0, 0, cameraDistance);
-    cameraPosition = vec3(rotate(cameraPitch, vec3(-1, 0, 0)) * vec4(cameraPosition, 1));
-    cameraPosition = vec3(rotate(cameraYaw, vec3(0, 1, 0)) * vec4(cameraPosition, 1));
-    
-//    vec3 cameraPosition = vec3(rotate(cameraYaw, vec3(0, 1, 0)) * rotate(cameraPitch, vec3(1,0,0)) * vec4(0,0,cameraDistance,0));
+//    vec3 cameraPosition = vec3(0, 0, cameraDistance);
+//    cameraPosition = vec3(rotate(cameraPitch, vec3(-1, 0, 0)) * vec4(cameraPosition, 1));
+//    cameraPosition = vec3(rotate(cameraYaw, vec3(0, 1, 0)) * vec4(cameraPosition, 1));
+
+    vec3 cameraPosition = vec3(rotate(cameraYaw, vec3(0, 1, 0)) * rotate(cameraPitch, vec3(1,0,0)) * vec4(0,0,cameraDistance,0));
     mat4 viewMat = lookAt(cameraPosition, sceneCenter, vec3(0, 1, 0));
     glUniformMatrix4fv(loc, 1, 0, value_ptr(viewMat));
     
@@ -198,6 +253,9 @@ void render(GLFWwindow* window){
     loc = glGetUniformLocation( program.programID, "lightEffect");
     glUniform1i(loc, lightEffect);
     
+    loc = glGetUniformLocation( program.programID, "shadowMVP");
+    glUniformMatrix4fv(loc, 1, 0, value_ptr(shadowMVP));
+    
     glActiveTexture(GL_TEXTURE0 + 2);
     glBindTexture(GL_TEXTURE_2D, diffTexID);
     loc = glGetUniformLocation( program.programID, "diffTex");
@@ -211,7 +269,8 @@ void render(GLFWwindow* window){
     glBindVertexArray(vertexArrayID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
     glDrawElements(GL_TRIANGLES, nTriangles[0]*3, GL_UNSIGNED_INT, 0);
-    
+     
+     
     glfwSwapBuffers(window);
 }
 
@@ -227,7 +286,6 @@ void cursorMotionCallback(GLFWwindow* window, double xpos, double ypos){
     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
         if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
             cameraFov += ( ypos - lastY ) /300;
-
         }
         else{
             cameraPitch -= (ypos - lastY) / 200;
