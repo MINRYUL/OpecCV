@@ -87,12 +87,12 @@ int main(int argc, const char * argv[]) {
 #define PATH "/Users/supro/Desktop/Archive/"
 
 void init(){
-    loadJ3A("Trex_m.j3a");
+    loadJ3A("dwarf.j3a");
     int texWidth, texHeight, texChannels;
     program.loadShaders("shader.vert", "shader.frag");
     shadowProgram.loadShaders("shadow.vert", "shadow.frag");
     
-    void* buffer = stbi_load("TrexColor01152015.jpg", &texWidth, &texHeight, &texChannels, 4);
+    void* buffer = stbi_load("dwarfD.jpg", &texWidth, &texHeight, &texChannels, 4);
 
     glGenTextures(1, &diffTexID);
     glBindTexture(GL_TEXTURE_2D, diffTexID);
@@ -106,7 +106,7 @@ void init(){
     
     stbi_image_free( buffer );
     
-    buffer = stbi_load("TrexBump012714.jpg", &texWidth, &texHeight, &texChannels, 4);
+    buffer = stbi_load("dwarfB.jpg", &texWidth, &texHeight, &texChannels, 4);
 
     glGenTextures(1, &bumpTexID);
     glBindTexture(GL_TEXTURE_2D, bumpTexID);
@@ -255,6 +255,11 @@ void render(GLFWwindow* window){
     
     loc = glGetUniformLocation( program.programID, "shadowMVP");
     glUniformMatrix4fv(loc, 1, 0, value_ptr(shadowMVP));
+    
+    mat4 shadowBias = translate(vec3(0.5))*scale(vec3(0.5));
+    mat4 shadowBiasMVP = shadowBias * shadowMVP;
+    loc = glGetUniformLocation( program.programID, "shadowBiasMVP");
+    glUniformMatrix4fv(loc, 1, 0, value_ptr(shadowBiasMVP));
     
     glActiveTexture(GL_TEXTURE0 + 2);
     glBindTexture(GL_TEXTURE_2D, diffTexID);
